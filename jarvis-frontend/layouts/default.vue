@@ -1,4 +1,5 @@
 <template>
-    <div>test
+    <div>
+        <slot />
     </div>
 </template>

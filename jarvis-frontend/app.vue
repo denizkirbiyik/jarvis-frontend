@@ -1,6 +1,6 @@
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <WhatTheSigma/>
+    <NuxtLayout ><NuxtPage/></NuxtLayout>
   </div>
 </template>
