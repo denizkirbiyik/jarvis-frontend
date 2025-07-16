@@ -11,18 +11,31 @@
 </template>
 
 <script setup lang="ts">
-const answer = ref(0)
-
 const route = useRoute();
 const router = useRouter();
 
+const answer = ref(0)
+const nextQuestion = parseInt(route.params.question_number) + 1
+
+
 const questionData = useState('questionList');
 const answerList = useState('answerList')
+
 async function addAnswers() {
   answerList.value.push(answer)
-  router.push(`/quiz-${route.params.quiz_id}/$`)
+
+  if (nextQuestion + 1 == questionData.value.length) {
+    // check answers
+    checkAnswers()
+    router.push(`/home`)
+  } else {
+    router.push(`/quiz-${route.params.quiz_id}/${nextQuestion}`)
+  }
 }
 
+async function checkAnswers() {
+  useFetch(`http://127.0.0.1:8000/api/check/${route.params.quiz_id}`, { "body": { "user": "skibdop", "data": answerList } })
+}
 </script>
 
 <style lang="scss" scoped></style>

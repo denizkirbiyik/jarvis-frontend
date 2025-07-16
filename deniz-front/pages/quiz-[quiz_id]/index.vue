@@ -12,7 +12,7 @@ const router = useRouter();
 
 const { data } = await useFetch(`http://127.0.0.1:8000/api/questions/${route.params.quiz_id}`);
 const questionData = useState('questionList');
-useState('answerList', () => [0])
+useState('answerList', () => [])
 
 async function fetchQuestions() {
     questionData.value = data.value;
