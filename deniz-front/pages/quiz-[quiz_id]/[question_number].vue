@@ -15,6 +15,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'question'
+})
+
 const quizStore = useQuizStore()
 const userStore = useUserStore()
 

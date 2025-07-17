@@ -15,5 +15,4 @@
 <script setup lang="ts">
 const { data: allQuizzes } = await useFetch<Quiz[]>(`http://127.0.0.1:8000/api/`);
 
-
 </script>

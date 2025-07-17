@@ -4,7 +4,7 @@ import { ref } from "vue";
 export const useUserStore = defineStore(
   "user",
   () => {
-    const currentUsername = ref<string>();
+    const currentUsername = ref<string | null>(null);
 
     return { currentUsername };
   },
