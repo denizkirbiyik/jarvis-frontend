@@ -6,18 +6,21 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const quizStore = useQuizStore()
 const route = useRoute();
 const router = useRouter();
 
-const { data } = await useFetch(`http://127.0.0.1:8000/api/questions/${route.params.quiz_id}`);
+const { data } = await useFetch<Question[]>(`http://127.0.0.1:8000/api/questions/${route.params.quiz_id}`);
 
 async function fetchQuestions() {
+    if (!data.value) {
+        console.error("No questions found.");
+        return;
+    }
+
     quizStore.questionList = data.value;
     router.push(`/quiz-${route.params.quiz_id}/0`);
-};
+}
 
 </script>
-
-<style lang="scss" scoped></style>

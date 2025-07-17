@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input v-model="userTyped" type="text" />
+    <input v-model="userTyped" type="text">
     <button @click="confirmUser(userTyped)">Sign In</button>
   </div>
 </template>
