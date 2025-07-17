@@ -3,7 +3,7 @@
     <h1 class="question_text">
       {{ currentQuestion.question_text }}
     </h1>
-    <input v-model="answer" type="number" size="10" class="border-black" />
+    <input v-model="answer" type="number" size="10" class="border-black">
     <button @click="addAnswers">Submit Answer</button>
   </div>
   <div v-else-if="questionData && questionData.length === 0">

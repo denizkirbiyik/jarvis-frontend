@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input v-model="userTyped" type="text" />
+    <input v-model="userTyped" type="text">
     <button @click="confirmUser(userTyped)">Sign In</button>
   </div>
 </template>
@@ -24,19 +24,17 @@ async function createUser(username: string) {
 }
 
 async function confirmUser(username: string) {
-  const { data: allUsers, error } = await useFetch(
-    `http://127.0.0.1:8000/api/users`
+  const { data: exists, error } = await useFetch(
+    `http://127.0.0.1:8000/api/user/check/${username}`
   );
   if (error.value) {
     console.error("Error fetching users:", error.value);
     return false;
   }
 
-  const users = allUsers.value || [];
-  const exists = users.some((user: any) => user.username === username);
-
-  if (exists) {
+  if (exists.value) {
     useState("currentUser", () => username);
+    console.log('USER ALREADY EHGEREHEHREHRHEHR')
     router.push("/home");
     return true;
   }
@@ -44,6 +42,7 @@ async function confirmUser(username: string) {
   const created = await createUser(username);
   if (created) {
     useState("currentUser", () => username);
+    console.log("MAKING NEW USERERERERERERERRERER")
     router.push("/home");
     return false;
   }
