@@ -29,6 +29,8 @@ onMounted(() => {
 
   quizStore.quizID = parseInt(route.params.quiz_id as string)
   quizStore.questionID = parseInt(route.params.question_id as string)
+
+  console.log(quizStore.answerList)
 })
 
 
