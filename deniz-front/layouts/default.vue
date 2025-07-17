@@ -1,7 +1,12 @@
 <template>
-    <div class="fixed">
-        <h1 class="bg-gray-50">"Header"</h1>
-        <button class="cursor-pointer" @click="signOut">Sign Out</button>
+    <div>
+        <div class="sticky top-0 flex flex-row justify-evenly w-[100vw]">
+            <h1>WELCOME TO JARVIS LI QUIZZES</h1>
+            <NuxtLink v-if="userStore.currentUsername !== null" class="cursor-pointer" to="/home">Go To Quiz List
+            </NuxtLink>
+            <button v-if="userStore.currentUsername !== null" class="cursor-pointer" @click="signOut">Sign Out</button>
+            <NuxtLink v-else to="/">Sign In</NuxtLink>
+        </div>
         <slot />
     </div>
 </template>
@@ -14,5 +19,3 @@ function signOut() {
     router.push('/')
 }
 </script>
-
-<style lang="css" scoped></style>
