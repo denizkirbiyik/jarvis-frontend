@@ -35,7 +35,6 @@ async function confirmUser(username: string) {
 
   if (exists.value) {
     userStore.currentUsername = username
-    console.log(username)
     router.push("/home");
     return true;
   }
@@ -43,7 +42,6 @@ async function confirmUser(username: string) {
   const created = await createUser(username);
   if (created) {
     userStore.currentUsername = username
-    console.log(username)
     router.push("/home");
     return false;
   }

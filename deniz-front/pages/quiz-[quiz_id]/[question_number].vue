@@ -29,6 +29,8 @@ onMounted(() => {
 
   quizStore.quizID = parseInt(route.params.quiz_id as string)
   quizStore.questionID = parseInt(route.params.question_id as string)
+
+  console.log(quizStore.answerList)
 })
 
 
@@ -62,6 +64,9 @@ async function addAnswers() {
   if (nextQuestion.value >= questionData.length) {
     await checkAnswers();
     quizStore.answerList = []
+    quizStore.questionList = []
+    quizStore.quizID = null
+    quizStore.questionID = null
     router.push(`/home`);
   } else {
     router.push(`/quiz-${route.params.quiz_id}/${nextQuestion.value}`);
@@ -70,7 +75,7 @@ async function addAnswers() {
 
 async function checkAnswers() {
   try {
-    const res = await $fetch(
+    await $fetch(
       `http://127.0.0.1:8000/api/check/${route.params.quiz_id}`,
       {
         method: "POST",
