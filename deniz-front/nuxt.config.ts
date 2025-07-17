@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/eslint',
     '@nuxt/ui',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
   ],
   vite: {    
     plugins: [      

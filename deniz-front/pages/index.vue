@@ -6,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+const userStore = useUserStore()
 const userTyped = ref("");
 
 const router = useRouter();
@@ -24,26 +25,25 @@ async function createUser(username: string) {
 }
 
 async function confirmUser(username: string) {
-  const { data: allUsers, error } = await useFetch(
-    `http://127.0.0.1:8000/api/users`
+  const { data: exists, error } = await useFetch(
+    `http://127.0.0.1:8000/api/users/check/${username}`
   );
   if (error.value) {
     console.error("Error fetching users:", error.value);
     return false;
   }
 
-  const users = allUsers.value || [];
-  const exists = users.some((user: any) => user.username === username);
-
-  if (exists) {
-    useState("currentUser", () => username);
+  if (exists.value) {
+    userStore.currentUsername = username
+    console.log(username)
     router.push("/home");
     return true;
   }
 
   const created = await createUser(username);
   if (created) {
-    useState("currentUser", () => username);
+    userStore.currentUsername = username
+    console.log(username)
     router.push("/home");
     return false;
   }

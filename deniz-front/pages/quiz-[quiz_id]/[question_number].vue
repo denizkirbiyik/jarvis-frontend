@@ -15,8 +15,22 @@
 </template>
 
 <script setup lang="ts">
+const quizStore = useQuizStore()
+const userStore = useUserStore()
+
 const route = useRoute();
 const router = useRouter();
+
+
+onMounted(() => {
+  if (quizStore.questionID) {
+    router.push(`/quiz-${quizStore.quizID}/${quizStore.questionID}`)
+  }
+
+  quizStore.quizID = parseInt(route.params.quiz_id as string)
+  quizStore.questionID = parseInt(route.params.question_id as string)
+})
+
 
 const answer = ref(0);
 const questionNumber = computed(() =>
@@ -24,19 +38,18 @@ const questionNumber = computed(() =>
 );
 const nextQuestion = computed(() => questionNumber.value + 1);
 
-const questionData = useState("questionList", () => []);
-const answerList = useState("answerList", () => []);
+const questionData = quizStore.questionList
 
 const currentQuestion = computed(() => {
-  if (!questionData.value || !Array.isArray(questionData.value)) return null;
-  return questionData.value[questionNumber.value];
+  if (!questionData || !Array.isArray(questionData)) return null;
+  return questionData[questionNumber.value];
 });
 
 watch(
   () => route.params.question_number,
   (newVal) => {
     const num = parseInt(newVal as string);
-    if (isNaN(num) || num < 0 || num >= questionData.value.length) {
+    if (isNaN(num) || num < 0 || num >= questionData.length) {
       router.push(`/quiz-${route.params.quiz_id}/0`);
     }
   },
@@ -44,10 +57,11 @@ watch(
 );
 
 async function addAnswers() {
-  answerList.value.push(answer.value);
+  quizStore.answerList.push(answer.value);
 
-  if (nextQuestion.value >= questionData.value.length) {
+  if (nextQuestion.value >= questionData.length) {
     await checkAnswers();
+    quizStore.answerList = []
     router.push(`/home`);
   } else {
     router.push(`/quiz-${route.params.quiz_id}/${nextQuestion.value}`);
@@ -61,15 +75,14 @@ async function checkAnswers() {
       {
         method: "POST",
         body: {
-          user: "sigmaboy",
-          data: answerList.value,
+          user: userStore.currentUsername,
+          data: quizStore.answerList,
         },
         headers: {
           "Content-Type": "application/json",
         },
       }
     );
-    console.log(res);
   } catch (error) {
     console.error("Error checking answers:", error);
   }
