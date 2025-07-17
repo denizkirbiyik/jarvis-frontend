@@ -1,21 +1,54 @@
 <template>
-    <div>
-        <button @click="confirmUser('sigmaboy')">sdrfhhrfhgr</button>
-    </div>
+  <div>
+    <input v-model="userTyped" type="text" />
+    <button @click="confirmUser(userTyped)">Sign In</button>
+  </div>
 </template>
 
 <script setup lang="ts">
+const userTyped = ref("");
+
+const router = useRouter();
 
 async function createUser(username: string) {
-    useFetch(`http://127.0.0.1:8000/api/users`, { "method": "POST", "body": { "data": { "username": username, "completed_test_scores": {} } } })
+  const { data, error } = await useFetch(`http://127.0.0.1:8000/api/users`, {
+    method: "POST",
+    body: { username: username, completed_test_scores: {} },
+  });
 
+  if (error.value) {
+    console.error("Error creating user:", error.value);
+    return false;
+  }
+  return data.value;
 }
 
 async function confirmUser(username: string) {
-    const allUsers = await useFetch(`http://127.0.0.1:8000/api/users`)
-    console.log(allUsers)
-    const exists = allUsers.some(user => user.username === username);
-    console.log(exists)
-}
+  const { data: allUsers, error } = await useFetch(
+    `http://127.0.0.1:8000/api/users`
+  );
+  if (error.value) {
+    console.error("Error fetching users:", error.value);
+    return false;
+  }
 
+  const users = allUsers.value || [];
+  const exists = users.some((user: any) => user.username === username);
+
+  if (exists) {
+    useState("currentUser", () => username);
+    router.push("/home");
+    return true;
+  }
+
+  const created = await createUser(username);
+  if (created) {
+    useState("currentUser", () => username);
+    router.push("/home");
+    return false;
+  }
+
+  console.error("Failed to create user");
+  return false;
+}
 </script>
