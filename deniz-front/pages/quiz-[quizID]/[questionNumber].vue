@@ -15,9 +15,6 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  middleware: 'question'
-})
 
 const quizStore = useQuizStore()
 const userStore = useUserStore()
@@ -25,17 +22,6 @@ const userStore = useUserStore()
 const route = useRoute();
 const router = useRouter();
 
-
-onMounted(() => {
-  if (quizStore.questionID) {
-    router.push(`/quiz-${quizStore.quizID}/${quizStore.questionID}`)
-  }
-
-  quizStore.quizID = parseInt(route.params.quizID as string)
-  quizStore.questionID = parseInt(route.params.questionNumber as string)
-
-  console.log(quizStore.answerList)
-})
 
 
 const answer = ref(0);
