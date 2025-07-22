@@ -8,7 +8,7 @@
   </div>
   <div v-else-if="questionData && questionData.length === 0">
     No Quiz Started, No Questions Found. Go to
-    <NuxtLink :to="`/quiz-${route.params.quiz_id}`">this page</NuxtLink> to
+    <NuxtLink :to="`/quiz-${route.params.quizID}`">this page</NuxtLink> to
     start the quiz.
   </div>
   <div v-else>Question not found or invalid question number</div>
@@ -26,7 +26,7 @@ const router = useRouter();
 
 const answer = ref(0);
 const questionNumber = computed(() =>
-  parseInt(route.params.question_number as string)
+  parseInt(route.params.questionNumber as string)
 );
 const nextQuestion = computed(() => questionNumber.value + 1);
 
@@ -38,11 +38,11 @@ const currentQuestion = computed(() => {
 });
 
 watch(
-  () => route.params.question_number,
+  () => route.params.questionNumber,
   (newVal) => {
     const num = parseInt(newVal as string);
     if (isNaN(num) || num < 0 || num >= questionData.length) {
-      router.push(`/quiz-${route.params.quiz_id}/0`);
+      router.push(`/quiz-${route.params.quizID}/0`);
     }
   },
   { immediate: true }
@@ -59,14 +59,14 @@ async function addAnswers() {
     quizStore.questionID = null
     router.push(`/home`);
   } else {
-    router.push(`/quiz-${route.params.quiz_id}/${nextQuestion.value}`);
+    router.push(`/quiz-${route.params.quizID}/${nextQuestion.value}`);
   }
 }
 
 async function checkAnswers() {
   try {
     await $fetch(
-      `http://127.0.0.1:8000/api/check/${route.params.quiz_id}`,
+      `http://127.0.0.1:8000/api/check/${route.params.quizID}`,
       {
         method: "POST",
         body: {

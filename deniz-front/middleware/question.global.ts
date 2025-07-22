@@ -2,8 +2,8 @@ export default defineNuxtRouteMiddleware((to) => {
     const quizStore = useQuizStore()
 
     if (!quizStore.quizID || !quizStore.questionID) {
-      const qid = parseInt(to.params.question_number as string)
-      const zid = parseInt(to.params.quiz_id as string)
+      const qid = parseInt(to.params.questionNumber as string)
+      const zid = parseInt(to.params.quizID as string)
       if (!isNaN(zid) && !isNaN(qid)) {
         quizStore.quizID = zid
         quizStore.questionID = qid
