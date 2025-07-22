@@ -11,7 +11,7 @@ const quizStore = useQuizStore()
 const route = useRoute();
 const router = useRouter();
 
-const { data } = await useFetch<Question[]>(`http://127.0.0.1:8000/api/questions/${route.params.quiz_id}`);
+const { data } = await useFetch<Question[]>(`http://127.0.0.1:8000/api/questions/${route.params.quizID}`);
 
 async function fetchQuestions() {
     if (!data.value) {
@@ -20,7 +20,7 @@ async function fetchQuestions() {
     }
 
     quizStore.questionList = data.value;
-    router.push(`/quiz-${route.params.quiz_id}/0`);
+    router.push(`/quiz-${route.params.quizID}/0`);
 }
 
 </script>
