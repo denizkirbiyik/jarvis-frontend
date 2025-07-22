@@ -1,0 +1,85 @@
+<template>
+  <div v-if="currentQuestion">
+    <h1 class="question_text">
+      {{ currentQuestion.question_text }}
+    </h1>
+    <input v-model="answer" type="number" size="10" class="border-black">
+    <button @click="addAnswers">Submit Answer</button>
+  </div>
+  <div v-else-if="questionData && questionData.length === 0">
+    No Quiz Started, No Questions Found. Go to
+    <NuxtLink :to="`/quiz-${route.params.quizID}`">this page</NuxtLink> to
+    start the quiz.
+  </div>
+  <div v-else>Question not found or invalid question number</div>
+</template>
+
+<script setup lang="ts">
+
+const quizStore = useQuizStore()
+const userStore = useUserStore()
+
+const route = useRoute();
+const router = useRouter();
+
+
+
+const answer = ref(0);
+const questionNumber = computed(() =>
+  parseInt(route.params.questionNumber as string)
+);
+const nextQuestion = computed(() => questionNumber.value + 1);
+
+const questionData = quizStore.questionList
+
+const currentQuestion = computed(() => {
+  if (!questionData || !Array.isArray(questionData)) return null;
+  return questionData[questionNumber.value];
+});
+
+watch(
+  () => route.params.questionNumber,
+  (newVal) => {
+    const num = parseInt(newVal as string);
+    if (isNaN(num) || num < 0 || num >= questionData.length) {
+      router.push(`/quiz-${route.params.quizID}/0`);
+    }
+  },
+  { immediate: true }
+);
+
+async function addAnswers() {
+  quizStore.answerList.push(answer.value);
+
+  if (nextQuestion.value >= questionData.length) {
+    await checkAnswers();
+    quizStore.answerList = []
+    quizStore.questionList = []
+    quizStore.quizID = null
+    quizStore.questionID = null
+    router.push(`/home`);
+  } else {
+    router.push(`/quiz-${route.params.quizID}/${nextQuestion.value}`);
+  }
+}
+
+async function checkAnswers() {
+  try {
+    await $fetch(
+      `http://127.0.0.1:8000/api/check/${route.params.quizID}`,
+      {
+        method: "POST",
+        body: {
+          user: userStore.currentUsername,
+          data: quizStore.answerList,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Error checking answers:", error);
+  }
+}
+</script>
